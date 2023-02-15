@@ -1,6 +1,6 @@
 #pragma once
+#include <cstdarg>
 #include <iostream>
-
 using namespace std;
 
 namespace containers {
@@ -59,6 +59,7 @@ public:
     current = 0;
     arr = new T[size];
   }
+  // vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
   vector(const int &size_, const T &val_) : size(size_), current(size_) {
     arr = new T[size];
 
@@ -66,6 +67,27 @@ public:
       arr[i] = val_;
     }
   }
+  // template <typename T2> 
+  vector(T val, ...) {
+    size = 1;
+    current = 0;
+    // cout << "sizeof: " << sizeof...();
+    va_list args;
+    va_start(args, val);
+    T arg = va_arg(args, T);
+    // cout << arg[0] << '\n';
+    // cout << arg << '\n';
+    for (int i=0 ; i<7; i++){
+      cout << "i: "<< i << ": " <<arg << '\n';
+      arg = va_arg(args, T);
+    }
+    cout << "end\n";
+    // while (arg != '\0') {
+    //   cout << arg << '\n';
+    // }
+    va_end(args);
+  }
+
   ~vector() { delete[] arr; }
   const unsigned int len() { return current; }
   containers::Iterator<T> begin() { return Iterator(&arr[0]); }
