@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdarg>
+#include <exception>
 #include <iostream>
 using namespace std;
 
@@ -55,10 +56,8 @@ public:
     current = 0;
     arr = new T[size];
   }
-  vector(const int &size_) : size(size_) {
-    current = 0;
-    arr = new T[size];
-  }
+  vector(const int &size_) : size(size_), current(0) { arr = new T[size]; }
+  
   // vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
   vector(const int &size_, const T &val_) : size(size_), current(size_) {
     arr = new T[size];
@@ -67,35 +66,38 @@ public:
       arr[i] = val_;
     }
   }
-  // template <typename T2> 
-  vector(T val, ...) {
-    size = 1;
+
+  template<size_t N>
+  vector(T (&val)[N] ){
+    size = sizeof(val) / sizeof(val[0]);
     current = 0;
-    // cout << "sizeof: " << sizeof...();
-    va_list args;
-    va_start(args, val);
-    T arg = va_arg(args, T);
-    // cout << arg[0] << '\n';
-    // cout << arg << '\n';
-    for (int i=0 ; i<7; i++){
-      cout << "i: "<< i << ": " <<arg << '\n';
-      arg = va_arg(args, T);
+    cout << "size: " << size << '\n';
+    arr = new T[size];
+    
+    for(; current < size ; current++){
+      arr[current] = val[current];
     }
-    cout << "end\n";
-    // while (arg != '\0') {
-    //   cout << arg << '\n';
-    // }
-    va_end(args);
+    cout << "array[0]: "<<val[0] << '\n';
+  }
+
+  template <typename... Ts> vector(Ts... args) {
+    size = sizeof...(Ts);
+    current = 0;
+    arr = new T[size];
+    for (const auto arg : {args...}) {
+      arr[current++] = arg;
+    }
+
   }
 
   ~vector() { delete[] arr; }
   const unsigned int len() { return current; }
   containers::Iterator<T> begin() { return Iterator(&arr[0]); }
   containers::Iterator<T> end() { return Iterator(&arr[current]); }
+
   void push_back(const T &data) {
     if (current == size) {
       T *temp = new T[size * 2];
-
       for (int i = 0; i < current; i++) {
         temp[i] = arr[i];
       }
