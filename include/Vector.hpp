@@ -57,7 +57,7 @@ public:
     arr = new T[size];
   }
   vector(const int &size_) : size(size_), current(0) { arr = new T[size]; }
-  
+
   // vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
   vector(const int &size_, const T &val_) : size(size_), current(size_) {
     arr = new T[size];
@@ -67,17 +67,15 @@ public:
     }
   }
 
-  template<size_t N>
-  vector(T (&val)[N] ){
+  // vector constructor from array input.
+  template <size_t N> vector(T (&val)[N]) {
     size = sizeof(val) / sizeof(val[0]);
     current = 0;
-    cout << "size: " << size << '\n';
     arr = new T[size];
-    
-    for(; current < size ; current++){
+
+    for (; current < size; current++) {
       arr[current] = val[current];
     }
-    cout << "array[0]: "<<val[0] << '\n';
   }
 
   template <typename... Ts> vector(Ts... args) {
@@ -87,7 +85,6 @@ public:
     for (const auto arg : {args...}) {
       arr[current++] = arg;
     }
-
   }
 
   ~vector() { delete[] arr; }
