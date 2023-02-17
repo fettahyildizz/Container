@@ -2,10 +2,11 @@
 #include <cstdarg>
 #include <exception>
 #include <iostream>
+#include <iterator>
 using namespace std;
 
 namespace containers {
-
+using namespace containers;
 template <typename T>
 
 struct Iterator {
@@ -42,6 +43,7 @@ private:
 
 template <typename T>
 
+// TODO: Create operator overloads
 class vector {
 private:
   // Allocated data for the vector
@@ -51,34 +53,55 @@ private:
   T *arr;
 
 public:
-  vector() {
-    size = 1;
-    current = 0;
-    arr = new T[size];
-  }
-  vector(const int &size_) : size(size_), current(0) { arr = new T[size]; }
+  // constexpr vector() {
+  //   size = 1;
+  //   current = 0;
+  //   arr = new T[size];
+  // }
+  // constexpr vector(const int &size_) : size(size_), current(0) {
+  //   arr = new T[size];
+  // }
 
-  // vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
-  vector(const int &size_, const T &val_) : size(size_), current(size_) {
-    arr = new T[size];
+  // /**
+  //  * @brief Copy Constructor
+  //  *
+  //  */
+  // constexpr vector(const vector &vec_) {
+  //   size = vec_.size;
+  //   current = vec_.current;
+  //   arr = new T[size];
+  //   for (int i = 0; i < current; i++) {
+  //     arr[i] = vec_.arr[i];
+  //   }
+  // }
 
-    for (int i = 0; i < size_; i++) {
-      arr[i] = val_;
-    }
-  }
+  // /**
+  //  * @brief vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
+  //  * \param size_ size of the vector.
+  //  \param val_ value which will be stored in the vector.
+  //  */
+  // constexpr vector(const int &size_, const T &val_)
+  //     : size(size_), current(size_) {
+  //   arr = new T[size];
+
+  //   for (int i = 0; i < size_; i++) {
+  //     arr[i] = val_;
+  //   }
+  // }
 
   // vector constructor from array input.
-  template <size_t N> vector(T (&val)[N]) {
-    size = sizeof(val) / sizeof(val[0]);
-    current = 0;
-    arr = new T[size];
+  // template <size_t N> constexpr vector(T (&val)[N]) {
+  //   size = sizeof(val) / sizeof(val[0]);
+  //   current = 0;
+  //   arr = new T[size];
 
-    for (; current < size; current++) {
-      arr[current] = val[current];
-    }
-  }
+  //   for (; current < size; current++) {
+  //     arr[current] = val[current];
+  //   }
+  // }
 
-  template <typename... Ts> vector(Ts... args) {
+  // vector constructor from initializer list.
+  template <typename... Ts> constexpr vector(Ts... args) {
     size = sizeof...(Ts);
     current = 0;
     arr = new T[size];
@@ -87,24 +110,59 @@ public:
     }
   }
 
-  ~vector() { delete[] arr; }
-  const unsigned int len() { return current; }
+  /**
+   * @brief Constructor from begin and end of the vector.
+   *
+   */
+  template <typename Iterator>
+  vector(containers::Iterator<Iterator> begin,
+         containers::Iterator<Iterator> end) {
+    size = 1;
+    current = 0;
+    // std::cout << "1111 \n";
+    arr = new T[size];
+    for (auto it = begin; it != end; it++) {
+      // this->push_back(*it);
+
+      if (current == size) {
+
+        T *temp = new T[size * 2];
+        for (int i = 0; i < current; i++) {
+          temp[i] = arr[i];
+        }
+        // delete []arr;
+        temp[current++] = *it;
+        arr = temp;
+      } else {
+        arr[current++] = *it;
+      }
+    }
+    cout << "\n";
+  }
+  // ~vector() { delete[] arr; }
+  // constexpr unsigned int len() { return current; }
   containers::Iterator<T> begin() { return Iterator(&arr[0]); }
   containers::Iterator<T> end() { return Iterator(&arr[current]); }
-
-  void push_back(const T &data) {
-    if (current == size) {
-      T *temp = new T[size * 2];
-      for (int i = 0; i < current; i++) {
-        temp[i] = arr[i];
-      }
-      // delete previous array
-      delete[] arr;
-      temp[current++] = data;
-      arr = temp;
-    } else {
-      arr[current++] = data;
-    }
-  }
+  /**
+   * @brief Push back data at the end of the vector.
+   *
+   * @param data data will be pushed back at the end of the vector.
+   */
+  // void push_back(const T &data) {
+  //   if (current == size) {
+  //     T *temp = new T[size * 2];
+  //     for (int i = 0; i < current; i++) {
+  //       temp[i] = arr[i];
+  //     }
+  //     // // delete previous array
+  //     // std::cout << '\n';
+  //     // delete[] arr;
+  //     temp[current++] = data;
+  //     arr = temp;
+  //     delete[] temp;
+  //   } else {
+  //     arr[current++] = data;
+  //   }
+  // }
 };
 } // namespace containers
