@@ -29,6 +29,18 @@ struct Iterator {
     ++(*this);
     return tmp;
   }
+  Iterator &operator+(const T& range) {
+    for (int i = 0; i < range; i++){
+      m_ptr++;
+    }
+    return *this;
+  }
+  Iterator &operator-(const T& range) {
+    for (int i = 0; i < range; i++){
+      m_ptr--;
+    }
+    return *this;
+  }
 
   friend bool operator==(const Iterator &a, const Iterator &b) {
     return a.m_ptr == b.m_ptr;
@@ -53,52 +65,52 @@ private:
   T *arr;
 
 public:
-  // constexpr vector() {
-  //   size = 1;
-  //   current = 0;
-  //   arr = new T[size];
-  // }
-  // constexpr vector(const int &size_) : size(size_), current(0) {
-  //   arr = new T[size];
-  // }
+  constexpr vector() {
+    size = 1;
+    current = 0;
+    arr = new T[size];
+  }
+  constexpr vector(const int &size_) : size(size_), current(0) {
+    arr = new T[size];
+  }
 
-  // /**
-  //  * @brief Copy Constructor
-  //  *
-  //  */
-  // constexpr vector(const vector &vec_) {
-  //   size = vec_.size;
-  //   current = vec_.current;
-  //   arr = new T[size];
-  //   for (int i = 0; i < current; i++) {
-  //     arr[i] = vec_.arr[i];
-  //   }
-  // }
+  /**
+   * @brief Copy Constructor
+   *
+   */
+  constexpr vector(const vector &vec_) {
+    size = vec_.size;
+    current = vec_.current;
+    arr = new T[size];
+    for (int i = 0; i < current; i++) {
+      arr[i] = vec_.arr[i];
+    }
+  }
 
-  // /**
-  //  * @brief vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
-  //  * \param size_ size of the vector.
-  //  \param val_ value which will be stored in the vector.
-  //  */
-  // constexpr vector(const int &size_, const T &val_)
-  //     : size(size_), current(size_) {
-  //   arr = new T[size];
+  /**
+   * @brief vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
+   * \param size_ size of the vector.
+   \param val_ value which will be stored in the vector.
+   */
+  constexpr vector(const int &size_, const T &val_)
+      : size(size_), current(size_) {
+    arr = new T[size];
 
-  //   for (int i = 0; i < size_; i++) {
-  //     arr[i] = val_;
-  //   }
-  // }
+    for (int i = 0; i < size_; i++) {
+      arr[i] = val_;
+    }
+  }
 
   // vector constructor from array input.
-  // template <size_t N> constexpr vector(T (&val)[N]) {
-  //   size = sizeof(val) / sizeof(val[0]);
-  //   current = 0;
-  //   arr = new T[size];
+  template <size_t N> constexpr vector(T (&val)[N]) {
+    size = sizeof(val) / sizeof(val[0]);
+    current = 0;
+    arr = new T[size];
 
-  //   for (; current < size; current++) {
-  //     arr[current] = val[current];
-  //   }
-  // }
+    for (; current < size; current++) {
+      arr[current] = val[current];
+    }
+  }
 
   // vector constructor from initializer list.
   template <typename... Ts> constexpr vector(Ts... args) {
@@ -119,50 +131,38 @@ public:
          containers::Iterator<Iterator> end) {
     size = 1;
     current = 0;
-    // std::cout << "1111 \n";
     arr = new T[size];
     for (auto it = begin; it != end; it++) {
-      // this->push_back(*it);
-
-      if (current == size) {
-
-        T *temp = new T[size * 2];
-        for (int i = 0; i < current; i++) {
-          temp[i] = arr[i];
-        }
-        // delete []arr;
-        temp[current++] = *it;
-        arr = temp;
-      } else {
-        arr[current++] = *it;
-      }
+      this->push_back(*it);
     }
-    cout << "\n";
   }
-  // ~vector() { delete[] arr; }
-  // constexpr unsigned int len() { return current; }
-  containers::Iterator<T> begin() { return Iterator(&arr[0]); }
-  containers::Iterator<T> end() { return Iterator(&arr[current]); }
+  ~vector() { delete[] arr; }
+  constexpr unsigned int len() { return current; }
+
+  
   /**
    * @brief Push back data at the end of the vector.
    *
    * @param data data will be pushed back at the end of the vector.
    */
-  // void push_back(const T &data) {
-  //   if (current == size) {
-  //     T *temp = new T[size * 2];
-  //     for (int i = 0; i < current; i++) {
-  //       temp[i] = arr[i];
-  //     }
-  //     // // delete previous array
-  //     // std::cout << '\n';
-  //     // delete[] arr;
-  //     temp[current++] = data;
-  //     arr = temp;
-  //     delete[] temp;
-  //   } else {
-  //     arr[current++] = data;
-  //   }
-  // }
+  void push_back(const T &data) {
+    if (current == size) {
+      size = size * 2;
+      T *temp = new T[size];
+      for (int i = 0; i < current; i++) {
+        temp[i] = arr[i];
+      }
+      // // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
+      delete[] arr;
+      temp[current++] = data;
+      arr = temp;
+    } else {
+      arr[current++] = data;
+    }
+  }
+
+  containers::Iterator<T> begin() { return Iterator(&arr[0]); }
+  containers::Iterator<T> end() { return Iterator(&arr[current]); }
+
 };
 } // namespace containers

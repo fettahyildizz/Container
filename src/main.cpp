@@ -11,24 +11,15 @@ int main() {
   
   // containers::vector<int> vec3(vec);
   // cout << "start:  ";
-  containers::vector<int> vec{1,2,3,4,5,6,7,8};
-  // std::cout << "asd\n";
-  containers::vector<int> vec4(vec.begin(), vec.end());
-  // cout << vec.begin() << '\n';
+  containers::vector<int> vec{1,2,3,4,5,6,7,8, 9};
+  containers::vector<int> vec4(vec.end()-3, vec.end());
   std::cout << "vec4:  ";
-  // for (auto i : vec4) {
-  //   std::cout << i << " ";
-  // }
+  for (auto i : vec4) {
+    std::cout << i << " ";
+  }
   std::cout << '\n';
   
-  // std::cout << '\n';
-  // vec.push_back(9);
-  
-  // for (auto i : vec4) {
-  //   std::cout << i << " ";
-  // }
-  
-  // std::cout << "size: " << vec.len() << '\n';
+
 
   return 0;
 }
