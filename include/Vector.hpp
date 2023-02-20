@@ -92,7 +92,7 @@ public:
    * \param size_ size of the vector.
    \param val_ value which will be stored in the vector.
    */
-  constexpr vector(const int &size_, const T &val_)
+  const vector(const int &size_, const T &val_)
       : size(size_), current(size_) {
     arr = new T[size];
 
@@ -139,7 +139,42 @@ public:
   ~vector() { delete[] arr; }
   constexpr unsigned int len() { return current; }
 
-  
+  vector operator + (const vector& obj) {
+      vector temp;
+      temp.size = current > obj.current ? current : obj.current;
+      temp.current = current > obj.current ? current : obj.current;
+      cout << "size: " << temp.size << '\n';
+      cout << "current: " << temp.current << '\n';
+      if (current > obj.current) {
+          cout << "if" << '\n';
+          for (int i = 0; i < obj.current; i++) {
+              temp.push_back(obj.arr[i] + arr[i]);
+          }
+          for (int i = obj.current; i < current; i++) {
+              temp.push_back(arr[i]);
+          }
+      }
+      else if (current == obj.current) {
+          cout << "else if" << '\n';
+          for (int i = 0; i < obj.current; i++) {
+              cout << obj.arr[i] << '\n';
+              cout << arr[i] << '\n';
+              cout << "sum: " << obj.arr[i] + arr[i] << '\n';
+              temp.push_back(obj.arr[i] + arr[i]);
+          }
+      }
+      else {
+          cout << "else" << '\n';
+          for (int i = 0; i < current; i++) {
+              temp.push_back(obj.arr[i] + arr[i]);
+          }
+          for (int i = current; i < obj.current; i++) {
+              temp.push_back(arr[i]);
+          }
+      }
+      
+      return temp;
+  }
   /**
    * @brief Push back data at the end of the vector.
    *
