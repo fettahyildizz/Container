@@ -70,7 +70,7 @@ public:
     current = 0;
     arr = new T[size];
   }
-  constexpr vector(const int &size_) : size(size_), current(0) {
+  const vector(const int &size_) : size(size_), current(0) {
     arr = new T[size];
   }
 
@@ -138,15 +138,14 @@ public:
   }
   ~vector() { delete[] arr; }
   constexpr unsigned int len() { return current; }
-
+  unsigned int _size_() { return size; }
+  /**
+  * @brief Operator for add
+  */
   vector operator + (const vector& obj) {
-      vector temp;
-      temp.size = current > obj.current ? current : obj.current;
-      temp.current = current > obj.current ? current : obj.current;
-      cout << "size: " << temp.size << '\n';
-      cout << "current: " << temp.current << '\n';
+      int size_ = current > obj.current ? current : obj.current;
+      vector temp(size_);
       if (current > obj.current) {
-          cout << "if" << '\n';
           for (int i = 0; i < obj.current; i++) {
               temp.push_back(obj.arr[i] + arr[i]);
           }
@@ -155,26 +154,54 @@ public:
           }
       }
       else if (current == obj.current) {
-          cout << "else if" << '\n';
-          for (int i = 0; i < obj.current; i++) {
-              cout << obj.arr[i] << '\n';
-              cout << arr[i] << '\n';
-              cout << "sum: " << obj.arr[i] + arr[i] << '\n';
+          for (int i = 0; i < obj.current; i++) {              
               temp.push_back(obj.arr[i] + arr[i]);
           }
       }
       else {
-          cout << "else" << '\n';
           for (int i = 0; i < current; i++) {
               temp.push_back(obj.arr[i] + arr[i]);
           }
           for (int i = current; i < obj.current; i++) {
-              temp.push_back(arr[i]);
+              temp.push_back(obj.arr[i]);
           }
       }
       
       return temp;
   }
+  /**
+  * @brief Operator for subtraction
+  */
+  vector operator - (const vector& obj) {
+      int size_ = current > obj.current ? current : obj.current;
+      vector temp(size_);
+      if (current > obj.current) {
+          for (int i = 0; i < obj.current; i++) {
+              temp.push_back(arr[i] - obj.arr[i]);
+          }
+          for (int i = obj.current; i < current; i++) {
+              temp.push_back(arr[i]);
+          }
+      }
+      else if (current == obj.current) {
+          for (int i = 0; i < obj.current; i++) {
+              temp.push_back(arr[i] - obj.arr[i]);
+          }
+      }
+      else {
+          for (int i = 0; i < current; i++) {
+              temp.push_back(arr[i] - obj.arr[i]);
+          }
+          for (int i = current; i < obj.current; i++) {
+              temp.push_back(obj.arr[i]);
+          }
+      }
+
+      return temp;
+  }
+
+  const T operator[](const size_t& i) const { return arr[i]; }
+  T& operator[](const size_t& i) { return arr[i]; }
   /**
    * @brief Push back data at the end of the vector.
    *
@@ -194,6 +221,31 @@ public:
     } else {
       arr[current++] = data;
     }
+  }
+
+  /**
+  * @brief Returns a reference to the element at position n in the vector.
+  */
+  const T at(const size_t& index) const {
+      //try {
+          cout <<"aaa: " << arr[index] << '\n';
+          return arr[index];
+      /*}
+      catch (const out_of_range& oor) {
+          cerr << "Out of range error: " << oor.what() << '\n';
+      }*/
+  }
+
+  T &at(const size_t& index)  {
+      cout << "bbb: " << arr[index] << '\n';
+      return arr[index];
+      /* try {
+          cout << "bbb: " << arr[index] << '\n';
+          return arr[index];
+      }
+      catch (const out_of_range& oor) {
+          cerr << "Out of range error: " << oor.what() << '\n';
+      }*/
   }
 
   containers::Iterator<T> begin() { return Iterator(&arr[0]); }

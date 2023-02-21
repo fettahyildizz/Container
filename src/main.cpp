@@ -13,6 +13,8 @@ int main() {
   // cout << "start:  ";
   containers::vector<int> vec{1,2,3,4,5,6,7,8, 9};
   containers::vector<int> vec2(vec.begin(), vec.end());
+  containers::vector<int> vec3{1,2,3,4,5,6};
+  containers::vector<int> vec5{4,5,6 };
   containers::vector<int> vec4 = vec + vec2;
   std::cout << "vec4:  ";
   for (auto i : vec4) {
@@ -20,7 +22,10 @@ int main() {
   }
   std::cout << '\n';
   std::cout << "size: " << vec4.len() << '\n';
-  
+  std::cout << "vec[0]: " << vec4.at(800) << '\n';
+  vec4.at(800) = 50;
+  std::cout << "vec[0]: " << vec4[800] << '\n';
+  std::cout << "vec size: " << vec4._size_() << '\n';
 
 
   return 0;
