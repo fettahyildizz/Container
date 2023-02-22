@@ -6,250 +6,284 @@
 using namespace std;
 
 namespace containers {
-using namespace containers;
-template <typename T>
+	using namespace containers;
+	template <typename T>
 
-struct Iterator {
+	struct Iterator {
 
-  using iterator_category = std::bidirectional_iterator_tag;
-  using difference_type = std::ptrdiff_t;
-  using value_type = T;
-  using pointer = T *;   // or also value_type*
-  using reference = T &; // or also value_type&
-  Iterator(pointer ptr) : m_ptr(ptr) {}
+		using iterator_category = std::bidirectional_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+		using value_type = T;
+		using pointer = T*;   // or also value_type*
+		using reference = T&; // or also value_type&
+		Iterator(pointer ptr) : m_ptr(ptr) {}
 
-  reference operator*() const { return *m_ptr; }
-  pointer operator->() { return m_ptr; }
-  Iterator &operator++() {
-    m_ptr++;
-    return *this;
-  }
-  Iterator operator++(int) {
-    Iterator tmp = *this;
-    ++(*this);
-    return tmp;
-  }
-  Iterator &operator+(const T& range) {
-    for (int i = 0; i < range; i++){
-      m_ptr++;
-    }
-    return *this;
-  }
-  Iterator &operator-(const T& range) {
-    for (int i = 0; i < range; i++){
-      m_ptr--;
-    }
-    return *this;
-  }
+		reference operator*() const { return *m_ptr; }
+		pointer operator->() { return m_ptr; }
+		Iterator& operator++() {
+			m_ptr++;
+			return *this;
+		}
+		Iterator operator++(int) {
+			Iterator tmp = *this;
+			++(*this);
+			return tmp;
+		}
+		Iterator& operator+(const T& range) {
+			for (int i = 0; i < range; i++) {
+				m_ptr++;
+			}
+			return *this;
+		}
+		Iterator& operator-(const T& range) {
+			for (int i = 0; i < range; i++) {
+				m_ptr--;
+			}
+			return *this;
+		}
 
-  friend bool operator==(const Iterator &a, const Iterator &b) {
-    return a.m_ptr == b.m_ptr;
-  };
-  friend bool operator!=(const Iterator &a, const Iterator &b) {
-    return a.m_ptr != b.m_ptr;
-  };
+		friend bool operator==(const Iterator& a, const Iterator& b) {
+			return a.m_ptr == b.m_ptr;
+		};
+		friend bool operator!=(const Iterator& a, const Iterator& b) {
+			return a.m_ptr != b.m_ptr;
+		};
 
-private:
-  pointer m_ptr;
-};
+	private:
+		pointer m_ptr;
+	};
 
-template <typename T>
+	template <typename T>
 
-// TODO: Create operator overloads
-class vector {
-private:
-  // Allocated data for the vector
-  unsigned int size;
-  // Current vector size
-  unsigned int current;
-  T *arr;
+	// TODO: Create operator overloads
+	class vector {
+	private:
+		// Allocated data for the vector
+		size_t capacity;
+		// Current vector capacity
+		size_t size;
+		T* arr;
 
-public:
-  constexpr vector() {
-    size = 1;
-    current = 0;
-    arr = new T[size];
-  }
-  const vector(const int &size_) : size(size_), current(0) {
-    arr = new T[size];
-  }
+	public:
+		constexpr vector() {
+			capacity = 1;
+			size = 0;
+			arr = new T[capacity];
+		}
+		const vector(const int& capacity_) : capacity(capacity_), size(0) {
+			arr = new T[capacity];
+		}
 
-  /**
-   * @brief Copy Constructor
-   *
-   */
-  constexpr vector(const vector &vec_) {
-    size = vec_.size;
-    current = vec_.current;
-    arr = new T[size];
-    for (int i = 0; i < current; i++) {
-      arr[i] = vec_.arr[i];
-    }
-  }
+		/**
+		 * @brief Copy Constructor
+		 *
+		 */
+		constexpr vector(const vector& vec_) {
+			capacity = vec_.capacity;
+			size = vec_.size;
+			arr = new T[capacity];
+			for (int i = 0; i < size; i++) {
+				arr[i] = vec_.arr[i];
+			}
+		}
 
-  /**
-   * @brief vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
-   * \param size_ size of the vector.
-   \param val_ value which will be stored in the vector.
-   */
-  const vector(const int &size_, const T &val_)
-      : size(size_), current(size_) {
-    arr = new T[size];
+		/**
+		 * @brief vector(5, 10) = { 10, 10, 10, 10, 10} Creates such a vector.
+		 * \param capacity_ capacity of the vector.
+		 \param val_ value which will be stored in the vector.
+		 */
+		const vector(const int& capacity_, const T& val_)
+			: capacity(capacity_), size(capacity_) {
+			arr = new T[capacity];
 
-    for (int i = 0; i < size_; i++) {
-      arr[i] = val_;
-    }
-  }
+			for (int i = 0; i < capacity_; i++) {
+				arr[i] = val_;
+			}
+		}
 
-  // vector constructor from array input.
-  template <size_t N> constexpr vector(T (&val)[N]) {
-    size = sizeof(val) / sizeof(val[0]);
-    current = 0;
-    arr = new T[size];
+		// vector constructor from array input.
+		template <size_t N> constexpr vector(T(&val)[N]) {
+			capacity = sizeof(val) / sizeof(val[0]);
+			size = 0;
+			arr = new T[capacity];
 
-    for (; current < size; current++) {
-      arr[current] = val[current];
-    }
-  }
+			for (; size < capacity; size++) {
+				arr[size] = val[size];
+			}
+		}
 
-  // vector constructor from initializer list.
-  template <typename... Ts> constexpr vector(Ts... args) {
-    size = sizeof...(Ts);
-    current = 0;
-    arr = new T[size];
-    for (const auto arg : {args...}) {
-      arr[current++] = arg;
-    }
-  }
+		// vector constructor from initializer list.
+		template <typename... Ts> const vector(Ts... args) {
+			capacity = sizeof...(Ts);
+			size = 0;
+			arr = new T[capacity];
+			for (const auto arg : { args... }) {
+				arr[size++] = arg;
+			}
+		}
 
-  /**
-   * @brief Constructor from begin and end of the vector.
-   *
-   */
-  template <typename Iterator>
-  vector(containers::Iterator<Iterator> begin,
-         containers::Iterator<Iterator> end) {
-    size = 1;
-    current = 0;
-    arr = new T[size];
-    for (auto it = begin; it != end; it++) {
-      this->push_back(*it);
-    }
-  }
-  ~vector() { delete[] arr; }
-  constexpr unsigned int len() { return current; }
-  unsigned int _size_() { return size; }
-  /**
-  * @brief Operator for add
-  */
-  vector operator + (const vector& obj) {
-      int size_ = current > obj.current ? current : obj.current;
-      vector temp(size_);
-      if (current > obj.current) {
-          for (int i = 0; i < obj.current; i++) {
-              temp.push_back(obj.arr[i] + arr[i]);
-          }
-          for (int i = obj.current; i < current; i++) {
-              temp.push_back(arr[i]);
-          }
-      }
-      else if (current == obj.current) {
-          for (int i = 0; i < obj.current; i++) {              
-              temp.push_back(obj.arr[i] + arr[i]);
-          }
-      }
-      else {
-          for (int i = 0; i < current; i++) {
-              temp.push_back(obj.arr[i] + arr[i]);
-          }
-          for (int i = current; i < obj.current; i++) {
-              temp.push_back(obj.arr[i]);
-          }
-      }
-      
-      return temp;
-  }
-  /**
-  * @brief Operator for subtraction
-  */
-  vector operator - (const vector& obj) {
-      int size_ = current > obj.current ? current : obj.current;
-      vector temp(size_);
-      if (current > obj.current) {
-          for (int i = 0; i < obj.current; i++) {
-              temp.push_back(arr[i] - obj.arr[i]);
-          }
-          for (int i = obj.current; i < current; i++) {
-              temp.push_back(arr[i]);
-          }
-      }
-      else if (current == obj.current) {
-          for (int i = 0; i < obj.current; i++) {
-              temp.push_back(arr[i] - obj.arr[i]);
-          }
-      }
-      else {
-          for (int i = 0; i < current; i++) {
-              temp.push_back(arr[i] - obj.arr[i]);
-          }
-          for (int i = current; i < obj.current; i++) {
-              temp.push_back(obj.arr[i]);
-          }
-      }
+		/**
+		 * @brief Constructor from begin and end of the vector.
+		 *
+		 */
+		template <typename Iterator>
+		vector(containers::Iterator<Iterator> begin,
+			containers::Iterator<Iterator> end) {
+			capacity = 1;
+			size = 0;
+			arr = new T[capacity];
+			for (auto it = begin; it != end; it++) {
+				this->push_back(*it);
+			}
+		}
+		~vector() { delete[] arr; }
+		const unsigned int len() { return size; }
 
-      return temp;
-  }
+		/**
+		* @brief Operator for add
+		*/
+		vector operator + (const vector& obj) {
+			int capacity_ = size > obj.size ? size : obj.size;
+			vector temp(capacity_);
+			if (size > obj.size) {
+				for (int i = 0; i < obj.size; i++) {
+					temp.push_back(obj.arr[i] + arr[i]);
+				}
+				for (int i = obj.size; i < size; i++) {
+					temp.push_back(arr[i]);
+				}
+			}
+			else if (size == obj.size) {
+				for (int i = 0; i < obj.size; i++) {
+					temp.push_back(obj.arr[i] + arr[i]);
+				}
+			}
+			else {
+				for (int i = 0; i < size; i++) {
+					temp.push_back(obj.arr[i] + arr[i]);
+				}
+				for (int i = size; i < obj.size; i++) {
+					temp.push_back(obj.arr[i]);
+				}
+			}
 
-  const T operator[](const size_t& i) const { return arr[i]; }
-  T& operator[](const size_t& i) { return arr[i]; }
-  /**
-   * @brief Push back data at the end of the vector.
-   *
-   * @param data data will be pushed back at the end of the vector.
-   */
-  void push_back(const T &data) {
-    if (current == size) {
-      size = size * 2;
-      T *temp = new T[size];
-      for (int i = 0; i < current; i++) {
-        temp[i] = arr[i];
-      }
-      // // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
-      delete[] arr;
-      temp[current++] = data;
-      arr = temp;
-    } else {
-      arr[current++] = data;
-    }
-  }
+			return temp;
+		}
+		/**
+		* @brief Operator for subtraction
+		*/
+		vector operator - (const vector& obj) {
+			int capacity_ = size > obj.size ? size : obj.size;
+			vector temp(capacity_);
+			if (size > obj.size) {
+				for (int i = 0; i < obj.size; i++) {
+					temp.push_back(arr[i] - obj.arr[i]);
+				}
+				for (int i = obj.size; i < size; i++) {
+					temp.push_back(arr[i]);
+				}
+			}
+			else if (size == obj.size) {
+				for (int i = 0; i < obj.size; i++) {
+					temp.push_back(arr[i] - obj.arr[i]);
+				}
+			}
+			else {
+				for (int i = 0; i < size; i++) {
+					temp.push_back(arr[i] - obj.arr[i]);
+				}
+				for (int i = size; i < obj.size; i++) {
+					temp.push_back(obj.arr[i]);
+				}
+			}
 
-  /**
-  * @brief Returns a reference to the element at position n in the vector.
-  */
-  const T at(const size_t& index) const {
-      //try {
-          cout <<"aaa: " << arr[index] << '\n';
-          return arr[index];
-      /*}
-      catch (const out_of_range& oor) {
-          cerr << "Out of range error: " << oor.what() << '\n';
-      }*/
-  }
+			return temp;
+		}
 
-  T &at(const size_t& index)  {
-      cout << "bbb: " << arr[index] << '\n';
-      return arr[index];
-      /* try {
-          cout << "bbb: " << arr[index] << '\n';
-          return arr[index];
-      }
-      catch (const out_of_range& oor) {
-          cerr << "Out of range error: " << oor.what() << '\n';
-      }*/
-  }
+		const T operator[](const size_t& index) const {
+			if ((index >= size) || (index < 0))
+				throw out_of_range("Accessing out of bounds.");
+			else return arr[index];
+		}
+		T& operator[](const size_t& index) {
+			if ((index >= size) || (index < 0))
+				throw out_of_range("Accessing out of bounds.");
+			else return arr[index];
 
-  containers::Iterator<T> begin() { return Iterator(&arr[0]); }
-  containers::Iterator<T> end() { return Iterator(&arr[current]); }
+		}
+		/**
+		 * @brief Push back data at the end of the vector.
+		 *
+		 * @param data data will be pushed back at the end of the vector.
+		 */
+		void push_back(const T& data) {
+			if (size == capacity) {
+				capacity = capacity * 2;
+				T* temp = new T[capacity];
+				for (int i = 0; i < size; i++) {
+					temp[i] = arr[i];
+				}
+				// // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
+				delete[] arr;
+				temp[size++] = data;
+				arr = temp;
+			}
+			else {
+				arr[size++] = data;
+			}
+		}
 
-};
+		/**
+		* @brief Returns a reference to the element at position n in the vector.
+		*/
+		const T at(const size_t& index) const {
+			if ((index >= size) || (index < 0))
+				throw out_of_range("Out of range error. Accessing " + index);
+			else return arr[index];
+		}
+
+		T& at(const size_t& index) {
+			if ((index >= size) || (index < 0))
+				throw out_of_range("Out of range error. Accessing " + index);
+			else return arr[index];
+		}
+
+		T back() const {
+			return arr[size - 1];
+		}
+
+		size_t _capacity_() const {
+			return capacity;
+		}
+
+		void clear() {
+			T* temp = new T[capacity];
+			size = 0;
+			delete[] arr;
+			arr = temp;
+		}
+
+		T* data() {
+			return arr;
+		}
+
+		containers::Iterator<T> emplace(containers::Iterator<T>& it_, const T& val_) {
+			if (size == capacity) {
+				capacity *= 2;
+				T* temp = new T[capacity];
+				for (int i = 0; i < size; i++) {
+					temp[i] = arr[i];
+				}
+				delete[]arr;
+				arr = temp;
+			}
+			arr[size++] = 
+		}
+
+		containers::Iterator<T> cbegin() const { return Iterator(&arr[0]); }
+		containers::Iterator<T> begin() { return Iterator(&arr[0]); }
+		containers::Iterator<T> cend() const { return Iterator(&arr[size]); }
+		containers::Iterator<T> end() { return Iterator(&arr[size]); }
+
+	};
 } // namespace containers
