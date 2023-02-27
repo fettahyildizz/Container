@@ -255,7 +255,9 @@ namespace containers {
 		size_t _capacity_() const {
 			return capacity;
 		}
-
+		size_t _size_() const {
+			return size;
+		}
 		void clear() {
 			T* temp = new T[capacity];
 			size = 0;
@@ -267,19 +269,89 @@ namespace containers {
 			return arr;
 		}
 
-		containers::Iterator<T> emplace(containers::Iterator<T>& it_, const T& val_) {
+		/*void emplace(containers::Iterator<T>& it_, const T& val_) {
 			if (size == capacity) {
+				capacity *= 2;
+			}
+			T* temp = new T[capacity];
+			size_t idx = 0;
+			for (auto it = begin(); it != it_; it++) {
+				temp[idx++] = *it;
+			}
+
+			temp[idx++] = val_;
+			for (auto it = it_ ; it != end(); it++) {
+
+				temp[idx++] = *it;
+			}
+			size = idx;
+			delete[]arr;
+			arr = temp;
+		}*/
+
+		template <typename Iterator>
+		void emplace(containers::Iterator<Iterator> begin_, const T& val_) {
+			size_t idx = 0;
+			bool increase_capacity = false;
+			
+
+			if (size == capacity) {
+				increase_capacity = true;
+				
+			}
+			cout << " *begin_: " << *begin_ << '\n';
+			T removed_val = *begin_;
+			*begin_ = val_;
+			size++;
+
+			for (auto it = begin_; it != end(); ++it) {
+				T removed_val2 = *it;
+				*it = removed_val;
+				removed_val = removed_val2;
+			}
+			if (increase_capacity == true) {
 				capacity *= 2;
 				T* temp = new T[capacity];
 				for (int i = 0; i < size; i++) {
 					temp[i] = arr[i];
 				}
-				delete[]arr;
+				// // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
+				delete[] arr;
 				arr = temp;
 			}
-			arr[size++] = 
-		}
 
+		}
+		//template <typename Iterator>
+		//void emplace(const containers::Iterator<Iterator>& begin_, const T& val_) {
+		//	size_t idx = 0;
+		//	
+		//	for (auto it = begin(); it != begin_; it++) {
+		//		idx++;
+		//	}
+
+		//	if (size == capacity) {
+		//		capacity *= 4;
+		//		T* temp = new T[capacity];
+		//		for (int i = 0; i < size; i++) {
+		//			temp[i] = arr[i];
+		//		}
+		//		// // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
+		//		delete[] arr;
+		//		arr = temp;
+		//	}
+		//	/*cout << " arr[0]: " << arr[0] << '\n';*/
+		//	T removed_val = arr[idx];
+		//	arr[idx++] = val_;
+		//	size++;
+		//	
+		//	for (; idx < size; idx++) {
+		//		T removed_val2 = arr[idx];
+		//		arr[idx] = removed_val;
+		//		removed_val = removed_val2;
+		//	}
+
+		//}
+		
 		containers::Iterator<T> cbegin() const { return Iterator(&arr[0]); }
 		containers::Iterator<T> begin() { return Iterator(&arr[0]); }
 		containers::Iterator<T> cend() const { return Iterator(&arr[size]); }

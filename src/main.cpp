@@ -1,5 +1,8 @@
 #include "Vector.hpp"
+#include <chrono>
+#include <vector>
 // using namespace std;
+using namespace std::chrono;
 
 int main() {
 	// containers::vector<int> vec(10,5);
@@ -11,18 +14,38 @@ int main() {
 
 	// containers::vector<int> vec3(vec);
 	// cout << "start:  ";
-	containers::vector<int> vec{ 1,2,3,4,5,6,7,8, 9 };
-	containers::vector<int> vec2(vec.begin(), vec.end());
-	const containers::vector<int> vec3{ 1,2,3,4,5,6 };
-	containers::vector<int> vec5{ 4,5,6 };
-	containers::vector<int> vec4 = vec + vec2;
-	std::cout << "vec:  ";
+	auto start = high_resolution_clock::now();
+	containers::vector<int> vec{ 1,2,3,4};
+	vec.emplace(vec.begin()+1, 100);
+	cout << "vec: " << '\n';
 	for (auto i : vec) {
 		std::cout << i << " ";
 	}
+	/*for (int i = 0; i < 10000; i++) {
+		vec.emplace(vec.end(), 100);
+	}
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	cout << " container::vector emplace10000 timesDuration (microseconds)" << duration.count() << endl;
 	
-	int* p = vec.data();
 	
+	auto start2 = high_resolution_clock::now();
+	std::vector<int> vec2{ 1 };
+	for (int i = 0; i < 10000; i++) {
+		vec2.emplace(vec2.end(), 100);
+	}
+
+	auto stop2 = high_resolution_clock::now();
+	auto duration2 = duration_cast<microseconds>(stop2 - start2);
+
+	cout << " std::vector pushback 1.000.000 timesDuration (microseconds)" << duration2.count() << endl;
+	*/
+	//std::cout << "vec:  ";
+	//for (auto i : vec) {
+	//	std::cout << i << " ";
+	//}
 
 
 
