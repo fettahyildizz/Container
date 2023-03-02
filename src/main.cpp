@@ -15,14 +15,14 @@ int main() {
 	// containers::vector<int> vec3(vec);
 	// cout << "start:  ";
 	auto start = high_resolution_clock::now();
-	containers::vector<int> vec{ 1,2,3,4};
-	vec.emplace(vec.begin()+1, 100);
+	containers::vector<int> vec{ 1,2, 3};
+	vec.emplace(vec.begin(), 100);
 	cout << "vec: " << '\n';
 	for (auto i : vec) {
 		std::cout << i << " ";
 	}
 	/*for (int i = 0; i < 10000; i++) {
-		vec.emplace(vec.end(), 100);
+		vec.emplace(vec.begin(), 100);
 	}
 
 	auto stop = high_resolution_clock::now();
@@ -34,7 +34,7 @@ int main() {
 	auto start2 = high_resolution_clock::now();
 	std::vector<int> vec2{ 1 };
 	for (int i = 0; i < 10000; i++) {
-		vec2.emplace(vec2.end(), 100);
+		vec2.emplace(vec2.begin(), 100);
 	}
 
 	auto stop2 = high_resolution_clock::now();

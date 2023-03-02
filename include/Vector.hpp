@@ -289,48 +289,29 @@ namespace containers {
 			arr = temp;
 		}*/
 
-		template <typename Iterator>
-		void emplace(containers::Iterator<Iterator> begin_, const T& val_) {
-			size_t idx = 0;
-			bool increase_capacity = false;
-			
-
-			if (size == capacity) {
-				increase_capacity = true;
-				
-			}
-			cout << " *begin_: " << *begin_ << '\n';
-			T removed_val = *begin_;
-			*begin_ = val_;
-			size++;
-
-			for (auto it = begin_; it != end(); ++it) {
-				T removed_val2 = *it;
-				*it = removed_val;
-				removed_val = removed_val2;
-			}
-			if (increase_capacity == true) {
-				capacity *= 2;
-				T* temp = new T[capacity];
-				for (int i = 0; i < size; i++) {
-					temp[i] = arr[i];
-				}
-				// // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
-				delete[] arr;
-				arr = temp;
-			}
-
-		}
 		//template <typename Iterator>
-		//void emplace(const containers::Iterator<Iterator>& begin_, const T& val_) {
+		//void emplace(containers::Iterator<Iterator> begin_, const T& val_) {
 		//	size_t idx = 0;
-		//	
-		//	for (auto it = begin(); it != begin_; it++) {
-		//		idx++;
-		//	}
-
+		//	bool increase_capacity = false;	
 		//	if (size == capacity) {
-		//		capacity *= 4;
+		//		increase_capacity = true;
+		//		
+		//	}
+		//	//cout << " *begin_: " << *begin_ << '\n';
+		//	T removed_val = *begin_;
+		//	*begin_++ = val_;
+		//	//begin_++;
+		//				
+		//		
+		//	for (auto it = begin_; it != end(); it++) {
+		//		
+		//		//cout << " *it: " << *it << '\n';
+		//		T removed_val2 = *it;
+		//		*it = removed_val;
+		//		removed_val = removed_val2;
+		//	}
+		//	if (increase_capacity == true) {
+		//		capacity *= 2;
 		//		T* temp = new T[capacity];
 		//		for (int i = 0; i < size; i++) {
 		//			temp[i] = arr[i];
@@ -339,18 +320,37 @@ namespace containers {
 		//		delete[] arr;
 		//		arr = temp;
 		//	}
-		//	/*cout << " arr[0]: " << arr[0] << '\n';*/
-		//	T removed_val = arr[idx];
-		//	arr[idx++] = val_;
+		//	*end() = removed_val;
 		//	size++;
-		//	
-		//	for (; idx < size; idx++) {
-		//		T removed_val2 = arr[idx];
-		//		arr[idx] = removed_val;
-		//		removed_val = removed_val2;
-		//	}
-
 		//}
+		template <typename T2>
+		template <typename... ARGS>
+		void emplace(const containers::Iterator<T2>* pos, ARGS&&... args) {
+			const size_t dist = pos - begin();
+
+			if (dist == capacity)
+			{
+				//emplace_back(T(std::forward<T>(args)...));
+			}
+			else
+			{
+				if (size == capacity)
+				{
+					capacity *= 2;
+					T* temp = new T[capacity];
+							for (int i = 0; i < size; i++) {
+								temp[i] = arr[i];
+							}
+							// // delete previous array since arr = temp is equal to arr points to temp's pointers pointing memory.
+							delete[] arr;
+							arr = temp;
+				}
+				std::move_backward(begin() + dist, end(), end() + 1);
+				iterator iter = &arr[dist];
+				*iter = std::move(args);
+				cout << "*iter: " << *iter << '\n';
+			}
+		}
 		
 		containers::Iterator<T> cbegin() const { return Iterator(&arr[0]); }
 		containers::Iterator<T> begin() { return Iterator(&arr[0]); }
